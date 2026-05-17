@@ -5,6 +5,7 @@ import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
 import 'utils/app_colors.dart';
 import 'utils/app_routes.dart';
+import 'widgets/offline_banner.dart';
 
 class CashBackRewardsApp extends StatelessWidget {
   const CashBackRewardsApp({super.key});
@@ -26,6 +27,17 @@ class CashBackRewardsApp extends StatelessWidget {
         AppRoutes.login: (_) => const LoginScreen(),
         AppRoutes.signup: (_) => const SignupScreen(),
         AppRoutes.home: (_) => const HomeScreen(),
+      },
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child ?? const SizedBox.shrink(),
+            const Align(
+              alignment: Alignment.topCenter,
+              child: OfflineBanner(),
+            ),
+          ],
+        );
       },
     );
   }

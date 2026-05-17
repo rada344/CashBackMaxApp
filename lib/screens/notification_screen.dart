@@ -1,79 +1,116 @@
 import 'package:flutter/material.dart';
 
+import '../services/notification_log_service.dart';
+import '../utils/app_colors.dart';
+
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
-  final List<NotificationItem> notifications = const [
-    NotificationItem(
-      icon: Icons.location_on,
-      title: 'Store detected',
-      message: 'You entered Coles. Flybuys gives the best reward here.',
-      time: '2 min ago',
-      color: Color(0xFF6C63FF),
-    ),
-    NotificationItem(
-      icon: Icons.credit_card,
-      title: 'Best card recommendation',
-      message: 'Use Flybuys Card to earn 3x points on groceries.',
-      time: '10 min ago',
-      color: Color(0xFF22C55E),
-    ),
-    NotificationItem(
-      icon: Icons.local_offer,
-      title: 'Bonus offer available',
-      message: 'Spend \$50 more at Coles to unlock 1,000 bonus points.',
-      time: 'Today',
-      color: Color(0xFFF59E0B),
-    ),
-    NotificationItem(
-      icon: Icons.security,
-      title: 'Security update',
-      message: 'Your reward card data is securely stored.',
-      time: 'Yesterday',
-      color: Color(0xFFEF4444),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final log = NotificationLog.instance;
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0F),
+      backgroundColor: AppColors.bg,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0F),
+        backgroundColor: AppColors.bg,
         elevation: 0,
         title: const Text(
           'Notifications',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text(
-            'Smart alerts based on your location, reward cards, and active offers.',
-            style: TextStyle(
-              color: Color(0xFF9CA3AF),
-              fontSize: 14,
-            ),
+        actions: [
+          ValueListenableBuilder<List<NotificationEntry>>(
+            valueListenable: log.entries,
+            builder: (_, list, __) {
+              if (list.isEmpty) return const SizedBox.shrink();
+              return TextButton(
+                onPressed: () => _confirmClear(context, log),
+                child: const Text(
+                  'Clear',
+                  style: TextStyle(color: AppColors.accent2, fontWeight: FontWeight.w700),
+                ),
+              );
+            },
           ),
-          const SizedBox(height: 20),
-
-          ...notifications.map((item) {
-            return _notificationCard(item);
-          }),
         ],
+      ),
+      body: ValueListenableBuilder<List<NotificationEntry>>(
+        valueListenable: log.entries,
+        builder: (_, list, __) {
+          if (list.isEmpty) {
+            return _EmptyState();
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+            itemCount: list.length + 1,
+            itemBuilder: (_, i) {
+              if (i == 0) {
+                return const Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    'Smart alerts based on your location, reward cards, and active offers.',
+                    style: TextStyle(color: AppColors.text2, fontSize: 14),
+                  ),
+                );
+              }
+              return _Card(entry: list[i - 1]);
+            },
+          );
+        },
       ),
     );
   }
 
-  Widget _notificationCard(NotificationItem item) {
+  void _confirmClear(BuildContext context, NotificationLog log) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: AppColors.bg2,
+        title: const Text('Clear all notifications?', style: TextStyle(color: AppColors.text)),
+        content: const Text(
+          'This will remove every alert from this list. It cannot be undone.',
+          style: TextStyle(color: AppColors.text2),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              log.clear();
+              Navigator.pop(dialogCtx);
+            },
+            child: const Text(
+              'Clear',
+              style: TextStyle(color: AppColors.red, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Card extends StatelessWidget {
+  const _Card({required this.entry});
+  final NotificationEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = _accentFor(entry.type);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF13131A),
+        color: AppColors.bg2,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+        border: Border.all(
+          color: entry.read
+              ? Colors.white.withValues(alpha: 0.06)
+              : accent.withValues(alpha: .4),
+          width: entry.read ? 1 : 1.5,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,38 +119,53 @@ class NotificationScreen extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: item.color.withValues(alpha: 0.15),
+              color: accent.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(item.icon, color: item.color),
+            child: Icon(_iconFor(entry.type), color: accent),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        entry.title,
+                        style: const TextStyle(
+                          color: AppColors.text,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    if (!entry.read)
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: accent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  item.message,
+                  entry.message,
                   style: const TextStyle(
-                    color: Color(0xFF9CA3AF),
+                    color: AppColors.text2,
                     fontSize: 13,
                     height: 1.4,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  item.time,
+                  _relativeTime(entry.createdAt),
                   style: const TextStyle(
-                    color: Color(0xFF5A5A7A),
+                    color: AppColors.text3,
                     fontSize: 12,
                   ),
                 ),
@@ -124,20 +176,70 @@ class NotificationScreen extends StatelessWidget {
       ),
     );
   }
+
+  IconData _iconFor(NotificationType t) => switch (t) {
+        NotificationType.storeAlert => Icons.location_on,
+        NotificationType.recommendation => Icons.credit_card,
+        NotificationType.reward => Icons.local_offer,
+        NotificationType.security => Icons.security,
+        NotificationType.system => Icons.notifications,
+      };
+
+  Color _accentFor(NotificationType t) => switch (t) {
+        NotificationType.storeAlert => AppColors.accent,
+        NotificationType.recommendation => AppColors.green,
+        NotificationType.reward => AppColors.amber,
+        NotificationType.security => AppColors.red,
+        NotificationType.system => AppColors.accent2,
+      };
+
+  String _relativeTime(DateTime t) {
+    final diff = DateTime.now().difference(t);
+    if (diff.inSeconds < 60) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
+    if (diff.inHours < 24) return '${diff.inHours} hr ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return '${t.day}/${t.month}/${t.year}';
+  }
 }
 
-class NotificationItem {
-  final IconData icon;
-  final String title;
-  final String message;
-  final String time;
-  final Color color;
-
-  const NotificationItem({
-    required this.icon,
-    required this.title,
-    required this.message,
-    required this.time,
-    required this.color,
-  });
+class _EmptyState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 88,
+              height: 88,
+              decoration: BoxDecoration(
+                color: AppColors.bg2,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white.withValues(alpha: .08)),
+              ),
+              child: const Icon(
+                Icons.notifications_none_rounded,
+                size: 44,
+                color: AppColors.text3,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'No notifications yet',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "When CashBackMax detects a supported store nearby, you'll see the alert here.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.text2, height: 1.5),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
