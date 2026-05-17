@@ -204,7 +204,7 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFF13131A),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
       ),
       child: Column(children: children),
     );
@@ -282,8 +282,8 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
       height: 42,
       decoration: BoxDecoration(
         color: danger
-            ? const Color(0xFFEF4444).withOpacity(0.15)
-            : const Color(0xFF6C63FF).withOpacity(0.15),
+            ? const Color(0xFFEF4444).withValues(alpha: 0.15)
+            : const Color(0xFF6C63FF).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(

@@ -152,12 +152,12 @@ Future<void> loadUserName() async {
     return Scaffold(
       body: SafeArea(child: screens[index]),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(color: AppColors.bg.withOpacity(.96), border: Border(top: BorderSide(color: Colors.white.withOpacity(.06)))),
+        decoration: BoxDecoration(color: AppColors.bg.withValues(alpha: .96), border: Border(top: BorderSide(color: Colors.white.withValues(alpha: .06)))),
         child: NavigationBar(
           selectedIndex: index,
           onDestinationSelected: (i) => setState(() => index = i),
           backgroundColor: Colors.transparent,
-          indicatorColor: AppColors.accent.withOpacity(.16),
+          indicatorColor: AppColors.accent.withValues(alpha: .16),
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Home'),
             NavigationDestination(icon: Icon(Icons.credit_card_rounded), label: 'Wallet'),
@@ -218,7 +218,7 @@ class _Dashboard extends StatelessWidget {
       const SizedBox(height: 16),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(color: AppColors.green.withOpacity(.12), borderRadius: BorderRadius.circular(18), border: Border.all(color: AppColors.green.withOpacity(.22))),
+        decoration: BoxDecoration(color: AppColors.green.withValues(alpha: .12), borderRadius: BorderRadius.circular(18), border: Border.all(color: AppColors.green.withValues(alpha: .22))),
         child: Row(children: [
           const Icon(Icons.location_on, color: AppColors.green, size: 20),
           const SizedBox(width: 8),
@@ -236,11 +236,11 @@ class _Dashboard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: const LinearGradient(colors: [Color(0xFF1A1A2E), Color(0xFF16213E)]),
           borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: AppColors.accent.withOpacity(.30)),
-          boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(.10), blurRadius: 32, offset: const Offset(0, 18))],
+          border: Border.all(color: AppColors.accent.withValues(alpha: .30)),
+          boxShadow: [BoxShadow(color: AppColors.accent.withValues(alpha: .10), blurRadius: 32, offset: const Offset(0, 18))],
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: AppColors.accent.withOpacity(.18), borderRadius: BorderRadius.circular(99)), child: const Text('⚡ LIVE RECOMMENDATION', style: TextStyle(color: AppColors.accent2, fontWeight: FontWeight.w900, fontSize: 11))),
+          Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: AppColors.accent.withValues(alpha: .18), borderRadius: BorderRadius.circular(99)), child: const Text('⚡ LIVE RECOMMENDATION', style: TextStyle(color: AppColors.accent2, fontWeight: FontWeight.w900, fontSize: 11))),
           const SizedBox(height: 14),
           Text('You are at $storeName', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
           const SizedBox(height: 6),
@@ -280,6 +280,7 @@ class _SectionTitle extends StatelessWidget {
 class _StoreRow extends StatelessWidget {
   const _StoreRow({required this.icon, required this.title, required this.subtitle, required this.badge, required this.color});
   final String icon,title,subtitle,badge; final Color color;
-  @override Widget build(BuildContext context) => Container(margin: const EdgeInsets.only(bottom: 10), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: AppColors.bg2, borderRadius: BorderRadius.circular(18)), child: Row(children: [Container(width: 44,height: 44,decoration: BoxDecoration(color: color.withOpacity(.13), borderRadius: BorderRadius.circular(14)), child: Center(child: Text(icon, style: const TextStyle(fontSize: 22)))), const SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(fontWeight: FontWeight.w700)), Text(subtitle, style: const TextStyle(color: AppColors.text2, fontSize: 12))])), Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), decoration: BoxDecoration(color: color.withOpacity(.12), borderRadius: BorderRadius.circular(99)), child: Text(badge, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w800)))]));
+  @override Widget build(BuildContext context) => Container(margin: const EdgeInsets.only(bottom: 10), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: AppColors.bg2, borderRadius: BorderRadius.circular(18)), child: Row(children: [Container(width: 44,height: 44,decoration: BoxDecoration(color: color.withValues(alpha: .13), borderRadius: BorderRadius.circular(14)), child: Center(child: Text(icon, style: const TextStyle(fontSize: 22)))), const SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(fontWeight: FontWeight.w700)), Text(subtitle, style: const TextStyle(color: AppColors.text2, fontSize: 12))])), Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), decoration: BoxDecoration(color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(99)), child: Text(badge, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w800)))]));
 }
 class _ActivityCard extends StatelessWidget { const _ActivityCard(); @override Widget build(BuildContext context) => Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: AppColors.bg3, borderRadius: BorderRadius.circular(18)), child: const Row(children: [Text('🏪', style: TextStyle(fontSize: 28)), SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Coles — Card switched', style: TextStyle(fontWeight: FontWeight.w800)), Text('Flybuys Mastercard used · 3.5x pts', style: TextStyle(color: AppColors.text2, fontSize: 12)), Text('Yesterday 2:14 PM', style: TextStyle(color: AppColors.text3, fontSize: 11))]))])); }
+

@@ -33,3 +33,4 @@ class RewardCardModel {
   List<String> bonusCategories;
   double fee;
 }
+

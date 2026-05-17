@@ -30,7 +30,7 @@ class _WalletScreenState extends State<WalletScreen> {
         onTap: _showAddCard,
         child: Container(
           padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(color: AppColors.bg3, borderRadius: BorderRadius.circular(24), border: Border.all(color: Colors.white.withOpacity(.14), style: BorderStyle.solid)),
+          decoration: BoxDecoration(color: AppColors.bg3, borderRadius: BorderRadius.circular(24), border: Border.all(color: Colors.white.withValues(alpha: .14), style: BorderStyle.solid)),
           child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.add_circle_outline, color: AppColors.text2), SizedBox(width: 10), Text('Add new reward card', style: TextStyle(color: AppColors.text2, fontWeight: FontWeight.w700))]),
         ),
       )
@@ -86,3 +86,4 @@ class _WalletScreenState extends State<WalletScreen> {
     ),
   );
 }
+

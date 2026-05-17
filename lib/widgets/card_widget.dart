@@ -17,24 +17,24 @@ class CardWidget extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: card.gradient,
           borderRadius: BorderRadius.circular(26),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(.35), blurRadius: 24, offset: const Offset(0, 12))],
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: .35), blurRadius: 24, offset: const Offset(0, 12))],
         ),
         child: Stack(children: [
           Positioned(right: -14, top: -14, child: Text(card.icon, style: const TextStyle(fontSize: 76))),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(width: 42, height: 30, decoration: BoxDecoration(color: Colors.white.withOpacity(.25), borderRadius: BorderRadius.circular(8))),
+            Container(width: 42, height: 30, decoration: BoxDecoration(color: Colors.white.withValues(alpha: .25), borderRadius: BorderRadius.circular(8))),
             const Spacer(),
-            Text('•••• •••• •••• ${card.lastFourDigits}', style: TextStyle(color: Colors.white.withOpacity(.75), letterSpacing: 2)),
+            Text('•••• •••• •••• ${card.lastFourDigits}', style: TextStyle(color: Colors.white.withValues(alpha: .75), letterSpacing: 2)),
             const SizedBox(height: 8),
             Text(card.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17)),
-            Text(card.category, style: TextStyle(color: Colors.white.withOpacity(.7), fontSize: 12)),
+            Text(card.category, style: TextStyle(color: Colors.white.withValues(alpha: .7), fontSize: 12)),
           ]),
           Positioned(
             bottom: 0,
             right: 0,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(color: Colors.black.withOpacity(.25), borderRadius: BorderRadius.circular(99)),
+              decoration: BoxDecoration(color: Colors.black.withValues(alpha: .25), borderRadius: BorderRadius.circular(99)),
               child: Text(card.benefit, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
             ),
           ),
@@ -43,3 +43,4 @@ class CardWidget extends StatelessWidget {
     );
   }
 }
+

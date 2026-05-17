@@ -18,7 +18,7 @@ class SplashScreen extends StatelessWidget {
                 Container(
                   width: 132,
                   height: 132,
-                  decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(34), boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(.38), blurRadius: 42, offset: const Offset(0, 14))]),
+                  decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(34), boxShadow: [BoxShadow(color: AppColors.accent.withValues(alpha: .38), blurRadius: 42, offset: const Offset(0, 14))]),
                   child: const Icon(Icons.credit_card_rounded, size: 68, color: Colors.white),
                 ),
                 const SizedBox(height: 30),
@@ -37,3 +37,4 @@ class SplashScreen extends StatelessWidget {
     );
   }
 }
+

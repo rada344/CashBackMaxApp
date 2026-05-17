@@ -17,3 +17,4 @@ class TransactionModel {
   final DateTime date;
   final double rewardValue;
 }
+

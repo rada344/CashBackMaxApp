@@ -16,9 +16,9 @@ class CustomButton extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: ghost || danger ? null : AppColors.primaryGradient,
-          color: danger ? AppColors.red.withOpacity(.10) : ghost ? Colors.transparent : null,
+          color: danger ? AppColors.red.withValues(alpha: .10) : ghost ? Colors.transparent : null,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: danger ? AppColors.red.withOpacity(.25) : Colors.white.withOpacity(.10)),
+          border: Border.all(color: danger ? AppColors.red.withValues(alpha: .25) : Colors.white.withValues(alpha: .10)),
         ),
         child: ElevatedButton(
           onPressed: onPressed,
@@ -33,3 +33,4 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
+

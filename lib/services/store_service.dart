@@ -40,3 +40,4 @@ class StoreService {
     return Geolocator.distanceBetween(position.latitude, position.longitude, store.latitude, store.longitude);
   }
 }
+

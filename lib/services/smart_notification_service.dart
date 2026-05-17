@@ -7,3 +7,4 @@ class SmartNotificationService {
     return true;
   }
 }
+

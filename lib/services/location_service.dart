@@ -20,6 +20,9 @@ class LocationService {
       throw Exception('Location permission is permanently denied. Enable it in phone settings.');
     }
 
-    return Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+    );
   }
 }
+

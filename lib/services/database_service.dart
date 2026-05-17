@@ -35,3 +35,4 @@ void addCard(RewardCardModel card) => _cards.add(card);
 
 void deleteCard(String id) => _cards.removeWhere((c) => c.id == id);
 }
+

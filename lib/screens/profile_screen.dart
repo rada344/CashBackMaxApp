@@ -66,37 +66,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-
         const SizedBox(height: 20),
-
         Row(
           children: [
             _Stat(value: widget.cardCount.toString(), label: 'Saved Cards'),
-            const SizedBox(width: 12),
-            const _Stat(value: '1,240', label: 'Total Points'),
           ],
         ),
-
         const SizedBox(height: 22),
-
         const _Section(label: 'Account'),
-
         _Setting(
           icon: '👤',
           label: 'Edit Profile',
           onTap: _editProfile,
         ),
-
         _Setting(
           icon: '🔑',
           label: 'Change Password',
           onTap: () {},
         ),
-
         const SizedBox(height: 18),
-
         const _Section(label: 'Preferences'),
-
         _Setting(
           icon: '🔔',
           label: 'Notification Settings',
@@ -109,7 +98,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           },
         ),
-
         _Setting(
           icon: '📍',
           label: 'Location Permissions',
@@ -122,7 +110,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           },
         ),
-
         _Setting(
           icon: '🔐',
           label: 'Privacy & Security',
@@ -135,7 +122,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           },
         ),
-
         _Setting(
           icon: '👥',
           label: 'View Firebase Users',
@@ -148,9 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           },
         ),
-
         const SizedBox(height: 18),
-
         CustomButton(
           text: 'Log Out',
           danger: true,

@@ -50,60 +50,6 @@ class _SignupScreenState extends State<SignupScreen> {
     Navigator.pushReplacementNamed(context, AppRoutes.home);
   }
 
-  void _showSocialSignup(String provider) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.bg2,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                provider == 'Apple' ? Icons.apple : Icons.g_mobiledata,
-                size: 54,
-                color: AppColors.accent,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Continue with $provider',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Create your CashBackMax account securely using your existing account.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.text2,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 24),
-              CustomButton(
-                text: 'Continue',
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,11 +169,12 @@ class _SignupScreenState extends State<SignupScreen> {
           final result = await auth.signInWithGoogle();
 
           if (result != null && context.mounted) {
-            Navigator.pushReplacementNamed(
-              context,
-              AppRoutes.home,
-            );
-          } else {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (context.mounted) {
+                Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+              }
+            });
+          } else if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text(
@@ -237,16 +184,6 @@ class _SignupScreenState extends State<SignupScreen> {
             );
           }
         },
-      ),
-    ),
-
-    const SizedBox(width: 12),
-
-    Expanded(
-      child: _SocialSignupButton(
-        icon: Icons.apple,
-        label: 'Apple',
-        onTap: () => _showSocialSignup('Apple'),
       ),
     ),
   ],
@@ -322,7 +259,7 @@ class _SignupHero extends StatelessWidget {
             left: 16,
             child: IconButton.filled(
               style: IconButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(.18),
+                backgroundColor: Colors.white.withValues(alpha: .18),
               ),
               onPressed: onBack,
               icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -370,7 +307,7 @@ class _SignupHero extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(.15),
+                    color: Colors.black.withValues(alpha: .15),
                     blurRadius: 24,
                     offset: const Offset(0, 12),
                   ),

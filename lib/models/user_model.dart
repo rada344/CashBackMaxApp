@@ -7,3 +7,4 @@ class UserModel {
   String get firstName => name.trim().split(' ').first;
   String get initials => name.trim().split(' ').where((e) => e.isNotEmpty).map((e) => e[0]).take(2).join().toUpperCase();
 }
+

@@ -25,3 +25,4 @@ class AppColors {
   static const cardAmber = LinearGradient(colors: [Color(0xFFB45309), amber]);
   static const cardBlue = LinearGradient(colors: [Color(0xFF1D4ED8), Color(0xFF60A5FA)]);
 }
+

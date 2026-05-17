@@ -40,7 +40,7 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
+  static FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDROI6rPQKx2uHrZbS5xTMETHi-3-e1zUk',
     appId: '1:918477263203:web:001f0ffa5f6a31731b0356',
     messagingSenderId: '918477263203',
@@ -50,7 +50,7 @@ class DefaultFirebaseOptions {
     measurementId: 'G-0NDXM1TK7R',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
+  static FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBl7q8ZLb25snLOcS4htNLu2dF4uj9HWAU',
     appId: '1:918477263203:android:cde6ba53ee1a69db1b0356',
     messagingSenderId: '918477263203',
@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'cashbackmax-d17de.firebasestorage.app',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
+  static FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA1WEiVcCsNvEmEpsAy042w4C3uw0GuUH4',
     appId: '1:918477263203:ios:f42ef8983fc45c441b0356',
     messagingSenderId: '918477263203',
@@ -67,7 +67,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.radra.cashbackRewardsPointsMaximiser',
   );
 
-  static const FirebaseOptions macos = FirebaseOptions(
+  static FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyA1WEiVcCsNvEmEpsAy042w4C3uw0GuUH4',
     appId: '1:918477263203:ios:587e7bc5b5238bba1b0356',
     messagingSenderId: '918477263203',
@@ -76,7 +76,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.cashbackRewardsPointsMaximiser',
   );
 
-  static const FirebaseOptions windows = FirebaseOptions(
+  static FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDROI6rPQKx2uHrZbS5xTMETHi-3-e1zUk',
     appId: '1:918477263203:web:831d54b871a10e9f1b0356',
     messagingSenderId: '918477263203',

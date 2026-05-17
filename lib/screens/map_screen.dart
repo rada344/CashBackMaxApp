@@ -44,9 +44,9 @@ class _MapScreenState extends State<MapScreen> {
     const Text('Location', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900)),
     const Text('Real-time detection + manual fallback', style: TextStyle(color: AppColors.text2)),
     const SizedBox(height: 18),
-    Container(height: 230, decoration: BoxDecoration(color: AppColors.bg3, borderRadius: BorderRadius.circular(24), border: Border.all(color: Colors.white.withOpacity(.06))), child: Stack(alignment: Alignment.center, children: [
-      Opacity(opacity: .35, child: GridPaper(color: Colors.white.withOpacity(.08), divisions: 1, subdivisions: 1, child: Container())),
-      Container(width: 20, height: 20, decoration: BoxDecoration(color: AppColors.accent, shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(.45), spreadRadius: 16, blurRadius: 20)])),
+    Container(height: 230, decoration: BoxDecoration(color: AppColors.bg3, borderRadius: BorderRadius.circular(24), border: Border.all(color: Colors.white.withValues(alpha: .06))), child: Stack(alignment: Alignment.center, children: [
+      Opacity(opacity: .35, child: GridPaper(color: Colors.white.withValues(alpha: .08), divisions: 1, subdivisions: 1, child: Container())),
+      Container(width: 20, height: 20, decoration: BoxDecoration(color: AppColors.accent, shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.accent.withValues(alpha: .45), spreadRadius: 16, blurRadius: 20)])),
       Positioned(bottom: 58, child: Text(nearestStore?.name ?? 'Your current location', style: const TextStyle(color: AppColors.text2))),
     ])),
     const SizedBox(height: 16),
@@ -91,3 +91,4 @@ class _MapScreenState extends State<MapScreen> {
 
 class _SwitchTile extends StatelessWidget { const _SwitchTile({required this.icon, required this.title, required this.subtitle, required this.value, required this.onChanged}); final String icon,title,subtitle; final bool value; final ValueChanged<bool> onChanged; @override Widget build(BuildContext context)=>Container(margin: const EdgeInsets.only(bottom: 10), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: AppColors.bg3, borderRadius: BorderRadius.circular(18)), child: Row(children:[Text(icon, style: const TextStyle(fontSize: 26)), const SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text(title, style: const TextStyle(fontWeight: FontWeight.w800)), Text(subtitle, style: const TextStyle(color: AppColors.text2, fontSize: 12))])), Switch(value: value, activeThumbColor: AppColors.green, onChanged: onChanged)])); }
 class _Nearby extends StatelessWidget { const _Nearby({required this.icon, required this.name, required this.sub, required this.dist, required this.onTap}); final String icon,name,sub,dist; final VoidCallback onTap; @override Widget build(BuildContext context)=>GestureDetector(onTap: onTap, child: Container(margin: const EdgeInsets.only(bottom: 10), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: AppColors.bg2, borderRadius: BorderRadius.circular(18)), child: Row(children:[Text(icon, style: const TextStyle(fontSize: 28)), const SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text(name, style: const TextStyle(fontWeight: FontWeight.w800)), Text(sub, style: const TextStyle(color: AppColors.text2, fontSize: 12))])), Text(dist, style: const TextStyle(color: AppColors.accent2, fontWeight: FontWeight.w800))]))); }
+
