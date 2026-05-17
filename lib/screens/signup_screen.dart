@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../utils/app_colors.dart';
@@ -20,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool agreeTerms = false;
   bool isLoading = false;
+  bool _googleLoading = false;
 
   @override
   void dispose() {
@@ -29,25 +31,67 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _createAccount() {
+  void _snack(String msg) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  Future<void> _createAccount() async {
+    final n = name.text.trim();
+    final e = email.text.trim();
+    final p = password.text;
+
+    if (n.isEmpty) {
+      _snack('Please enter your name');
+      return;
+    }
+    if (e.isEmpty) {
+      _snack('Please enter your email');
+      return;
+    }
+    if (p.length < 6) {
+      _snack('Password must be at least 6 characters');
+      return;
+    }
     if (!agreeTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please agree to the Terms & Privacy Policy.'),
-        ),
-      );
+      _snack('Please agree to the Terms & Privacy Policy.');
       return;
     }
 
     setState(() => isLoading = true);
+    try {
+      await auth.signup(name: n, email: e, password: p);
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    } on FirebaseAuthException catch (err) {
+      debugPrint('Signup error: code=${err.code} message=${err.message}');
+      if (!mounted) return;
+      _snack(_mapSignupError(err));
+    } catch (err) {
+      debugPrint('Signup unexpected error: $err');
+      if (!mounted) return;
+      _snack('Something went wrong. Please try again.');
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
 
-    auth.signup(
-      name: name.text.trim(),
-      email: email.text.trim(),
-      password: password.text,
-    );
-
-    Navigator.pushReplacementNamed(context, AppRoutes.home);
+  String _mapSignupError(FirebaseAuthException err) {
+    switch (err.code) {
+      case 'email-already-in-use':
+        return 'An account already exists for that email. Try signing in.';
+      case 'weak-password':
+        return 'Password is too weak. Use at least 6 characters.';
+      case 'invalid-email':
+        return 'Please enter a valid email address.';
+      case 'operation-not-allowed':
+        return 'Email sign-up is not enabled. Contact support.';
+      case 'network-request-failed':
+        return 'Network error. Check your connection and try again.';
+      default:
+        return 'Sign-up failed (${err.code}). Please try again.';
+    }
   }
 
   @override
@@ -137,8 +181,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(height: 12),
 
                   CustomButton(
-                    text: isLoading ? 'Creating Account...' : 'Create Account',
-                    onPressed: isLoading ? () {} : _createAccount,
+                    text: isLoading ? 'Creating account…' : 'Create Account',
+                    loading: isLoading,
+                    onPressed: _createAccount,
                   ),
 
                   const SizedBox(height: 22),
@@ -165,23 +210,21 @@ class _SignupScreenState extends State<SignupScreen> {
       child: _SocialSignupButton(
         icon: Icons.g_mobiledata,
         label: 'Google',
+        loading: _googleLoading,
         onTap: () async {
-          final result = await auth.signInWithGoogle();
-
-          if (result != null && context.mounted) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (context.mounted) {
-                Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-              }
-            });
-          } else if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Google sign-in failed or was cancelled',
-                ),
-              ),
-            );
+          if (_googleLoading) return;
+          final navigator = Navigator.of(context);
+          setState(() => _googleLoading = true);
+          try {
+            final result = await auth.signInWithGoogle();
+            if (!mounted) return;
+            if (result != null) {
+              navigator.pushReplacementNamed(AppRoutes.home);
+            } else {
+              _snack('Google sign-in failed or was cancelled');
+            }
+          } finally {
+            if (mounted) setState(() => _googleLoading = false);
           }
         },
       ),
@@ -347,11 +390,13 @@ class _SocialSignupButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
+    this.loading = false,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -359,7 +404,7 @@ class _SocialSignupButton extends StatelessWidget {
       color: AppColors.bg2,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
-        onTap: onTap,
+        onTap: loading ? null : onTap,
         borderRadius: BorderRadius.circular(16),
         child: Container(
           height: 54,
@@ -367,10 +412,17 @@ class _SocialSignupButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 26),
+              if (loading)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                Icon(icon, size: 26),
               const SizedBox(width: 8),
               Text(
-                label,
+                loading ? 'Connecting…' : label,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                 ),

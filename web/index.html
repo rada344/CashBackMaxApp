@@ -31,6 +31,30 @@
 
   <title>cashback_rewards_points_maximiser</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Native browser notification shim used by NativeNotificationService. -->
+  <script>
+    (function () {
+      window.cbmNotifySupported = function () {
+        return ('Notification' in window);
+      };
+      window.cbmNotifyPermission = function () {
+        if (!('Notification' in window)) return 'unsupported';
+        return Notification.permission;
+      };
+      window.cbmNotifyRequest = function () {
+        if (!('Notification' in window)) return Promise.resolve('unsupported');
+        try { return Notification.requestPermission(); }
+        catch (e) { return Promise.resolve('unsupported'); }
+      };
+      window.cbmNotifyShow = function (title, body) {
+        if (!('Notification' in window)) return;
+        if (Notification.permission !== 'granted') return;
+        try { new Notification(title, { body: body }); }
+        catch (e) { /* ignore */ }
+      };
+    })();
+  </script>
 </head>
 <body>
   <!--

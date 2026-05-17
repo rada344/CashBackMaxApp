@@ -8,6 +8,7 @@ class RecommendationResult {
     required this.pointsValue,
     required this.cashbackValue,
     required this.bonusValue,
+    required this.discountValue,
     required this.fees,
   });
 
@@ -17,6 +18,7 @@ class RecommendationResult {
   final double pointsValue;
   final double cashbackValue;
   final double bonusValue;
+  final double discountValue;
   final double fees;
 }
 
@@ -26,44 +28,59 @@ class RecommendationService {
 
   double convertPointsToDollar(double points) => points * pointDollarValue;
 
-  double calculateScore({
-    required RewardCardModel card,
-    required double amount,
-    required String category,
-    required String store,
-  }) {
-    final basePoints = card.baseRate * amount;
-    final storeBonusPoints = card.supportedStores.any((s) => store.toLowerCase().contains(s.toLowerCase())) ? 600.0 : 0.0;
-    final categoryBonusPoints = card.bonusCategories.any((c) => category.toLowerCase().contains(c.toLowerCase())) ? 400.0 : 0.0;
-    final bonusPoints = storeBonusPoints + categoryBonusPoints;
-    final pointsValue = convertPointsToDollar(basePoints + bonusPoints);
-    final cashbackValue = card.cashbackRate * amount;
-    return pointsValue + cashbackValue - card.fee;
-  }
-
   RecommendationResult analyseCard({
     required RewardCardModel card,
     required double amount,
     required String category,
     required String store,
   }) {
+    final storeMatch = card.supportedStores
+        .any((s) => store.toLowerCase().contains(s.toLowerCase()));
+    final categoryMatch = card.bonusCategories
+        .any((c) => category.toLowerCase().contains(c.toLowerCase()));
+
     final basePoints = card.baseRate * amount;
-    final storeBonusPoints = card.supportedStores.any((s) => store.toLowerCase().contains(s.toLowerCase())) ? 600.0 : 0.0;
-    final categoryBonusPoints = card.bonusCategories.any((c) => category.toLowerCase().contains(c.toLowerCase())) ? 400.0 : 0.0;
+    final storeBonusPoints = storeMatch ? 600.0 : 0.0;
+    final categoryBonusPoints = categoryMatch ? 400.0 : 0.0;
     final bonusPoints = storeBonusPoints + categoryBonusPoints;
+
     final pointsValue = convertPointsToDollar(basePoints + bonusPoints);
     final cashbackValue = card.cashbackRate * amount;
-    final score = pointsValue + cashbackValue - card.fee;
+    final bonusValue = convertPointsToDollar(bonusPoints);
+    final discountValue =
+        storeMatch ? amount * (card.discountPercent / 100.0) : 0.0;
+
+    final score = pointsValue + cashbackValue + discountValue - card.fee;
 
     return RecommendationResult(
       card: card,
       score: score,
       pointsValue: pointsValue,
       cashbackValue: cashbackValue,
-      bonusValue: convertPointsToDollar(bonusPoints),
+      bonusValue: bonusValue,
+      discountValue: discountValue,
       fees: card.fee,
-      reason: 'Best estimated usable value at $store for ${category.toLowerCase()} spending.',
+      reason:
+          'Best estimated usable value at $store for ${category.toLowerCase()} spending.',
     );
+  }
+
+  /// Returns all cards ranked highest-score first.
+  List<RecommendationResult> rank(
+    List<RewardCardModel> cards, {
+    String store = 'Woolworths',
+    String category = 'Groceries',
+    double amount = 100,
+  }) {
+    return cards
+        .map((card) => analyseCard(
+              card: card,
+              amount: amount,
+              category: category,
+              store: store,
+            ))
+        .toList()
+      ..sort((a, b) => b.score.compareTo(a.score));
   }
 
   RecommendationResult recommend(
@@ -75,13 +92,6 @@ class RecommendationService {
     if (cards.isEmpty) {
       throw StateError('No reward cards available for recommendation.');
     }
-
-    final scored = cards
-        .map((card) => analyseCard(card: card, amount: amount, category: category, store: store))
-        .toList()
-      ..sort((a, b) => b.score.compareTo(a.score));
-
-    return scored.first;
+    return rank(cards, store: store, category: category, amount: amount).first;
   }
 }
-
